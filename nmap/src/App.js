@@ -1,18 +1,34 @@
-import './App.css';
-import {naver} from 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID';
+import { useEffect, useRef } from "react";
+import "./App.css";
+// import {naver} from ``;
 
 function App() {
-  const mapOptions = {
-      center: new naver.maps.LatLng(37.3595704, 127.105399),
-      zoom: 10
-  }
+  const mapElement = useRef(null);
 
-  const map = new naver.maps.Map('map', mapOptions);
+  useEffect(() => {
+    const { naver } = window;
+    if (!mapElement.current || !naver) return;
 
+    // 지도에 표시할 위치의 위도와 경도 좌표를 파라미터로 넣어줍니다.
+    const location = new naver.maps.LatLng(37.5656, 126.9769);
+    const mapOptions = {
+      center: location,
+      zoom: 17,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: naver.maps.Position.TOP_RIGHT,
+      },
+    };
+    const map = new naver.maps.Map(mapElement.current, mapOptions);
+    new naver.maps.Marker({
+      position: location,
+      map,
+    });
+  }, []);
   return (
     <div className="App">
       <h1>지도 실습</h1>
-      {map}
+      <div ref={mapElement} style={{ minHeight: "400px" }} />;
     </div>
   );
 }
